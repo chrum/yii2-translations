@@ -1,0 +1,8 @@
+{
+    "name": "chrum/yii2-translations",
+    "description": "super simple translations module rewritten for yii2",
+    "license": "",
+    "autoload": {
+        "psr-4": { "chrum\\yii2\\translations\\": "" }
+    }
+}
