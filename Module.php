@@ -4,7 +4,7 @@ namespace chrum\yii2\translations;
 
 class Module extends \yii\base\Module
 {
-    public $controllerNamespace = ' chrum\yii2\translations\controllers';
+    public $controllerNamespace = 'chrum\yii2\translations\controllers';
 
     //public $defaultController='default';
 
