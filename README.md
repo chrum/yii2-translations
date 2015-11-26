@@ -27,8 +27,6 @@ Update composer.json
 ~~~
 Update the project by running 'composer update'
 
-Copy the module files to location of your choice
-
 Enable the module in the config/main.php file adjusting 'class' to your needs:
 ~~~php
 return array(
@@ -49,5 +47,5 @@ return array(
 ~~~
 
 * Apply migrations
-'php yii migrate --migrationPath=vendor/chrum/yii2-translations/migrations'
-* Use gii to generate 'Translations' model
+'./yii migrate --migrationPath=vendor/chrum/yii2-translations/migrations'
+* Use gii to generate 'Translation' model for table {'%translations'}

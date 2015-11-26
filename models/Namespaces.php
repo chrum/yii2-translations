@@ -93,46 +93,5 @@ class Namespaces extends CActiveRecord
 		return parent::model($className);
 	}
 
-    public function namespaceValidator($attribute, $params) {
-        if (isset($this->$attribute)) {
-            if (self::isValidNamespace($this->$attribute)) {
-                //do nothing if its ok
-            } else {
-                $this->addError($attribute, 'Your namespace is invalid, it should contain only alphanumeric characters and dashes ( _ )');
-            }
-        }
-    }
 
-    public function isValidNamespace($namespace) {
-        $alphanumeric = str_replace("_", "", $namespace);
-        if (ctype_alnum($alphanumeric)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function getCurrent() {
-        if (isset(Yii::app()->session['translationsNamespace'])) {
-            return Yii::app()->session['translationsNamespace'];
-        }
-        return null;
-    }
-
-    public static function setCurrent($namespace) {
-        if ($namespace != null) {
-            if ($namespace == 'all') {
-                unset(Yii::app()->session['translationsNamespace']);
-                return;
-            }
-            if (self::model()->isValidNamespace($namespace)) {
-                $namespaces = Namespaces::model()->findAll();
-                foreach($namespaces as $ns) {
-                    if ($ns->name == $namespace) {
-                        Yii::app()->session['translationsNamespace'] = $namespace;
-                    }
-                }
-            }
-        }
-    }
 }

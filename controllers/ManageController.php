@@ -2,24 +2,13 @@
 
 namespace chrum\yii2\translations\controllers;
 
-class ManageController extends \yii\base\Module
+use chrum\yii2\translations\helpers\langHelper;
+use chrum\yii2\translations\models\TranslationNamespace;
+use common\models\Translation;
+use yii\web\Controller;
+
+class ManageController extends Controller
 {
-    public function getId()
-    {
-        // use constant id to allow mapping fake controller names to this one, @see TranslationsModule::$controllerMap
-        return 'manage';
-    }
-
-    public function getUniqueId()
-    {
-        // use constant id to allow mapping fake controller names to this one, @see TranslationsModule::$controllerMap
-        return $this->getModule() ? $this->getModule()->getId().'/manage' : 'manage';
-    }
-
-    public function run($actionID)
-    {
-        return parent::run(($id=parent::getId()) !== 'manage' ? $id : $actionID);
-    }
 
     public function actions()
     {
@@ -34,21 +23,21 @@ class ManageController extends \yii\base\Module
 
     public function actionIndex() {
         if (isset($_REQUEST['setNamespace'])) {
-            Namespaces::setCurrent($_REQUEST['setNamespace']);
+            TranslationNamespace::setCurrent($_REQUEST['setNamespace']);
         }
 
-        $q = new CDbCriteria();
-        $q->order = "string_id ASC";
+        $query = Translation::find()
+            ->orderBy("string_id ASC");
 
-        $currentNamespace = Namespaces::getCurrent();
+        $currentNamespace = TranslationNamespace::getCurrent();
         if ($currentNamespace != null) {
-            $q->addCondition("string_id like '$currentNamespace%' ");
+            $query->where(['like', 'string_id', $currentNamespace]);
         };
 
-        $models = Translations::model()->findAll($q);
-        $namespaces = Namespaces::model()->findAll();
+        $models = $query->all();
+        $namespaces = TranslationNamespace::find()->all();
 
-		$this->render('index', array(
+		return $this->render('index', array(
             'models' => $models,
             'namespaces' => $namespaces,
             'currentNamespace' => $currentNamespace

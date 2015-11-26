@@ -1,11 +1,8 @@
 <?php
 /* @var $this TranslationsController */
 /** @var $models Translations[] */
-$this->breadcrumbs=array(
-	'Translations',
-);
-Yii::app()->clientScript->registerCoreScript('jquery');
-$langs = langHelper::getLangs();
+
+$langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
 ?>
 <script>
     $(document).ready(function() {
@@ -17,7 +14,7 @@ $langs = langHelper::getLangs();
             if (typeof(rowLink) == 'undefined') {
                 rowLink = target.parent().data("row-link");
             }
-            document.location.href = '<?php echo Yii::app()->getBaseUrl(true); ?>' + rowLink;
+            document.location.href = '<?= \yii\helpers\BaseUrl::base(); ?>' + rowLink;
             return false;
         });
     })

@@ -6,7 +6,7 @@ class Module extends \yii\base\Module
 {
     public $controllerNamespace = 'chrum\yii2\translations\controllers';
 
-    //public $defaultController='default';
+    public $defaultRoute = 'manage';
 
     public $defaultLang = "en";
     /**
