@@ -5,7 +5,9 @@ use chrum\yii2\translations\helpers\langHelper;
 
 class m141113_082503_addTranslations extends \yii\db\Migration
 {
-    protected $MySqlOptions = 'ENGINE=InnoDB DEFAULT CHARSET=utf8';
+    protected $MySqlOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+    protected $tableOptions = null;
+
 	public function up()
 	{
         $columns = [
@@ -15,10 +17,15 @@ class m141113_082503_addTranslations extends \yii\db\Migration
 
         $langs = langHelper::getLangs();
         foreach($langs as $key => $value) {
-            $columns[$key] = $this->string(1024);
+            $columns[$key] = $this->string(1025);
         }
 
-        $this->createTable("{{%translations}}", $columns, $this->MySqlOptions);
+        if ($this->db->driverName === 'mysql')
+        {
+            $this->tableOptions = $this->MySqlOptions;
+        }
+
+        $this->createTable("{{%translations}}", $columns, $this->tableOptions);
 
 	}
 

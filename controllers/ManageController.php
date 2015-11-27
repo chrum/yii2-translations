@@ -15,10 +15,22 @@ class ManageController extends Controller
         $actions = array();
         $langs = langHelper::getLangs();
         foreach($langs as $code => $name) {
-            $actions[$code] = 'translations.actions.getTranslationsAction';
+            $actions[$code] = 'chrum\yii2\translations\actions\getTranslationsAction';
         }
 
         return $actions;
+    }
+
+    public function runAction($id, $params = [])
+    {
+        if ($id == '') {
+            $langs = langHelper::getLangs();
+            $fakeControllerId = $this->id;
+            if (array_key_exists($fakeControllerId, $langs)) {
+                $id = $fakeControllerId;
+            }
+        }
+        return parent::runAction($id, $params);
     }
 
     public function actionIndex() {

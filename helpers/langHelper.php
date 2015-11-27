@@ -17,15 +17,18 @@ class langHelper {
 
     public static function getTranslations($lang)
     {
+        $namespacedClass = \Yii::$app->getModule('translations')->translationsModelClass;
         /* @var \yii\db\ActiveRecord[] $items */
-        $items = Translation::find()->all();
-        /*$items = Yii::app()->db->createCommand()
-            ->select('string_id, '.$lang)
-            ->from(Translations::model()->tableName())
-            ->queryAll();*/
+        $items = $namespacedClass::find()->all();
         $translations = array();
         foreach($items as $item) {
-            $translations[strtoupper($item->string_id)] = $lang == 'debug' ? ucwords(str_replace('_',' ',strtolower($item->string_id))) : (($item->$lang=='') ? $item->dk : $item->$lang);
+            if ($lang == 'debug') {
+                $translations[strtoupper($item->string_id)] = ucwords(str_replace('_',' ',strtolower($item->string_id)));
+
+            } else {
+                $translations[strtoupper($item->string_id)] =  ($item->$lang=='') ? $item->dk : $item->$lang;
+
+            }
         }
 
 

@@ -22,6 +22,8 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
-        // custom initialization code goes here
+        foreach($this->langs as $code => $name) {
+            $this->controllerMap[$code] = 'chrum\yii2\translations\controllers\ApiController';
+        }
     }
 }

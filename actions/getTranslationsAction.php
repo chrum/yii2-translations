@@ -5,13 +5,17 @@
  * Date: 10/13/14
  * Time: 6:00 PM
  */
+namespace chrum\yii2\translations\actions;
 
-class getTranslationsAction extends CAction
+use yii\base\Action;
+use chrum\yii2\translations\helpers\langHelper;
+
+class getTranslationsAction extends Action
 {
-    public function run()
+    public function runWithParams($params)
     {
-        $lang = $this->getId();
-        $result = new stdClass();
+        $lang = $this->id;
+        $result = new \stdClass();
         if ($lang != '') {
             $availableLangs = langHelper::getLangs();
             $availableLangs['debug'] = 'DEBUG';
@@ -19,8 +23,7 @@ class getTranslationsAction extends CAction
                 $result = langHelper::getTranslations($lang);
             }
         }
-        $controller = $this->getController();
-        $controller->renderJson($result);
-        Yii::app()->end();
+
+        return $result;
     }
 }
