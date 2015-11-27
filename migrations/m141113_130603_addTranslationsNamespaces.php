@@ -6,8 +6,8 @@ class m141113_130603_addTranslationsNamespaces extends \yii\db\Migration
     public function up()
     {
         $this->createTable('{{%translations_namespaces}}', array(
-            'id' => Schema::TYPE_PK,
-            'name' => Schema::TYPE_STRING,
+            'id' => $this->primaryKey(),
+            'name' => $this->string(),
         ));
     }
 

@@ -54,33 +54,6 @@ return [
 
 ~~~
 
-In order to restrict access to this module the configuration should/might look like this:
-
-~~~php
-return [
-    ......
-    'modules' => [
-        'translations' => [
-            'class' => 'chrum\yii2\translations\Module',
-            "defaultLang" => "dk",
-            "langs" => [
-                "en" => "English",
-                "dk" => "Danish",
-            ],
-            'as access' => [
-                'class' => 'yii\filters\AccessControl',
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ]
-                ]
-            ],
-        ],
-    ],
-]
-~~~
-
 * Apply migrations
 
     './yii migrate --migrationPath=vendor/chrum/yii2-translations/migrations'
@@ -97,5 +70,27 @@ return [
             ...
         ],
     ],
+]
+~~~
+
+* (OPTIONAL but good) In order to restrict access to this module, add to module configuration:
+  
+~~~php
+return [
+  ...
+  'modules' => [
+      'translations' => [
+            ...
+          'as access' => [
+              'class' => 'yii\filters\AccessControl',
+              'rules' => [
+                  [
+                      'allow' => true,
+                      'roles' => ['@'],
+                  ]
+              ]
+          ],
+      ],
+  ],
 ]
 ~~~
