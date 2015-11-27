@@ -1,11 +1,13 @@
 <?php
+namespace chrum\yii2\translations\controllers;
+use chrum\yii2\translations\models\TranslationNamespace;
 
-class NamespaceController extends EController
+class NamespaceController extends \yii\web\Controller
 {
     public function actionIndex($errors = null) {
-        $namespaces = Namespaces::model()->findAll();
+        $namespaces = TranslationNamespace::find()->all();
 
-		$this->render('index', array(
+		return $this->render('index', array(
             'namespaces' => $namespaces,
             'errors' => $errors
         ));
@@ -13,19 +15,21 @@ class NamespaceController extends EController
 
     public function actionCreate()
     {
-        $namespace = new Namespaces();
+        $namespace = new TranslationNamespace();
         $namespace->setAttributes($_REQUEST);
         $namespace->save();
-        $this->actionIndex($namespace->getErrors());
+
+        return $this->actionIndex($namespace->getErrors());
     }
 
     public function actionDelete($id)
     {
-        $model = Namespaces::model()->findByPk($id);
+        $model = TranslationNamespace::findOne($id);
+        /* @var $model TranslationNamespace */
         if ($model != null) {
             $model->delete();
         }
-        unset(Yii::app()->session['translationsNamespace']);
-        $this->actionIndex($model->getErrors());
+
+        return $this->actionIndex($model->getErrors());
     }
 }

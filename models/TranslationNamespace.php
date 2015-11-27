@@ -54,17 +54,16 @@ class TranslationNamespace extends \yii\db\ActiveRecord
                 \Yii::$app->session->remove('translationsNamespace');
                 return;
             }
-            $validator = new TranslationNamespaceValidator();
-            /*
-            if (self::model()->isValidNamespace($namespace)) {
-                $availableNamespaces = self::find()->select(['name'])->column();
-                foreach($availableNamespaces as $name) {
-                    if ($name == $namespace) {
-                        Yii::app()->session['translationsNamespace'] = $namespace;
-                    }
-                }
+            // TODO: namespace validation
+            // $validator = new TranslationNamespaceValidator();
+            $availableNamespaces = self::find()->select(['name'])->column();
+            if (in_array($namespace, $availableNamespaces)) {
+                \Yii::$app->session->set('translationsNamespace', $namespace);
             }
-            */
         }
+    }
+
+    public static function removeCurrent() {
+        \Yii::$app->session->remove('translationsNamespace');
     }
 }

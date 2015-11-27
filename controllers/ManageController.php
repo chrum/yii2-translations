@@ -4,8 +4,8 @@ namespace chrum\yii2\translations\controllers;
 
 use chrum\yii2\translations\helpers\langHelper;
 use chrum\yii2\translations\models\TranslationNamespace;
-use common\models\Translation;
 use yii\web\Controller;
+use yii\helpers\StringHelper;
 
 class ManageController extends Controller
 {
@@ -26,7 +26,9 @@ class ManageController extends Controller
             TranslationNamespace::setCurrent($_REQUEST['setNamespace']);
         }
 
-        $query = Translation::find()
+        $class = \Yii::$app->getModule('translations')->translationsModelClass;
+        /* @var $class \yii\db\ActiveRecord */
+        $query = $class::find()
             ->orderBy("string_id ASC");
 
         $currentNamespace = TranslationNamespace::getCurrent();
@@ -46,39 +48,46 @@ class ManageController extends Controller
 
     public function actionCreate()
     {
-        $translation = new Translations();
+        $namespacedClass = \Yii::$app->getModule('translations')->translationsModelClass;
+        $class = StringHelper::basename($namespacedClass);
+        /* @var $translation \yii\db\ActiveRecord */
+        $translation = new $namespacedClass();
 
-        if (isset($_REQUEST['Translations'])) {
-            $translation->attributes = $_REQUEST['Translations'];
+        if (isset($_REQUEST[$class])) {
+            $translation->setAttributes($_REQUEST[$class]);
 
             if ($translation->validate()) {
-                if (isset($_REQUEST['namespace']) && Namespaces::model()->isValidNamespace($_REQUEST['namespace'])) {
-                    $translation->string_id = $_REQUEST['namespace'].$translation->string_id;
+                // TODO: validate namespace
+                if (isset($_REQUEST['namespace']) && $_REQUEST['namespace'] != '') {
+                    // check if namespace is not already there
+                    if (strpos($translation->string_id, $_REQUEST['namespace']) === false) {
+                        $translation->string_id = $_REQUEST['namespace'].$translation->string_id;
+                    }
                 }
 
                 if ($translation->save(false)) {
-                    $this->redirect(array('index'));
+                    $this->redirect(['manage/update', 'id' => $translation->id]);
+
+                } else {
+                    foreach($translation->getFirstErrors() as $attribute => $error) {
+                        \Yii::$app->getSession()->setFlash('error', $error);
+                    }
                 }
             }
         }
 
-        if ($translation->id != null) {
-            $this->redirect(array('update','id'=>$translation->id));
-        }
-
-        $currentNamespace = Namespaces::getCurrent();
-        $namespaces = Namespaces::model()->findAll();
-
-        $this->render('edit', array(
+        return $this->render('edit', array(
             'model'     => $translation,
-            'namespaces' => $namespaces,
-            'currentNamespace' => $currentNamespace
+            'namespaces' => TranslationNamespace::find()->all(),
+            'currentNamespace' => TranslationNamespace::getCurrent()
         ));
     }
 
     public function actionDelete($id)
     {
-        $model = Translations::model()->findByPk($id);
+        $class = \Yii::$app->getModule('translations')->translationsModelClass;
+        /* @var $model \yii\db\ActiveRecord */
+        $model = $class::findOne($id);
         if ($model != null) {
             $model->delete();
         }
@@ -91,33 +100,43 @@ class ManageController extends Controller
 
     public function actionUpdate($id)
     {
-        $model = Translations::model()->findByPk($id);
+        $namespacedClass = \Yii::$app->getModule('translations')->translationsModelClass;
+        $class = StringHelper::basename(($namespacedClass));
+        /* @var $model \yii\db\ActiveRecord */
+        $model = $namespacedClass::findOne($id);
 
-        if (isset($_REQUEST['Translations'])) {
-            $model->attributes = $_REQUEST['Translations'];
+        if (isset($_REQUEST[$class])) {
+            $model->setAttributes($_REQUEST[$class]);
 
-            if ($model->validate()) {
-                if ($model->save(false)) {
-                    $this->redirect(array('index'));
+            if ($model->save()) {
+                $this->redirect(['manage/index']);
+
+            } else {
+                foreach($model->getFirstErrors() as $attribute => $error) {
+                    \Yii::$app->getSession()->setFlash('error', $error);
                 }
             }
         }
 
-        $this->render('edit', array(
+        return $this->render('edit', array(
             'model'     => $model,
         ));
     }
 
     public function actionBulkAdd() {
+        $class = \Yii::$app->getModule('translations')->translationsModelClass;
+        /* @var $translation \yii\db\ActiveRecord */
+
         $added = 0;
         if (isset($_REQUEST['strings'])) {
             foreach($_REQUEST['strings'] as $string) {
                 if ($string != "") {
-                    $translation = new Translations();
+                    $translation = new $class();
                     $translation->string_id = $string;
 
                     if ($translation->validate()) {
-                        if (isset($_REQUEST['namespace']) && Namespaces::model()->isValidNamespace($_REQUEST['namespace'])) {
+                        // TODO: validate namespace (use validator)
+                        if (isset($_REQUEST['namespace'])) {
                             $translation->string_id = $_REQUEST['namespace'].$translation->string_id;
                         }
                         $translation->save(false);
@@ -126,14 +145,15 @@ class ManageController extends Controller
                 }
 
             }
+            \Yii::$app->getSession()->setFlash('success', 'Added '.$added.' new language strings.');
         }
 
-        $currentNamespace = Namespaces::getCurrent();
-        $namespaces = Namespaces::model()->findAll();
-        $this->render('bulk_add', array(
+        $currentNamespace = TranslationNamespace::getCurrent();
+        $namespaces = TranslationNamespace::find()->all();
+
+        return $this->render('bulk_add', array(
             'namespaces' => $namespaces,
-            'currentNamespace' => $currentNamespace,
-            'added' => $added
+            'currentNamespace' => $currentNamespace
         ));
     }
 }

@@ -1,8 +1,17 @@
 <?php
-/* @var $this TranslationsController */
-/** @var $models Translations[] */
+/* @var $this yii\web\View */
+/* @var $models [] */
+/* @var $currentNamespace String */
+/* @var $namespaces chrum\yii2\translations\models\TranslationNamespace[] */
 
-$langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
+use yii\helpers\Url;
+use chrum\yii2\translations\helpers\langHelper;
+use yii\helpers\Html;
+
+// Trick to force yii2 to load jquery
+$this->registerJs('', \yii\web\View::POS_READY);
+
+$langs = langHelper::getLangs();
 ?>
 <script>
     $(document).ready(function() {
@@ -14,7 +23,7 @@ $langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
             if (typeof(rowLink) == 'undefined') {
                 rowLink = target.parent().data("row-link");
             }
-            document.location.href = '<?= \yii\helpers\BaseUrl::base(); ?>' + rowLink;
+            document.location.href = rowLink;
             return false;
         });
     })
@@ -46,10 +55,16 @@ $langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
         <?php endforeach; ?>
         <li class="divider"></li>
         <li role="presentation">
-            <a role="menuitem" tabindex="-1" href="/translations/namespace">Edit namespaces</a>
+            <a role="menuitem" tabindex="-1" href="<?= \yii\helpers\Url::to(['namespace/index']) ?>">Edit namespaces</a>
         </li>
     </ul>
 </div>
+
+<div class="col-md-4 pull-right" style="text-align: right">
+    <a class="btn btn-primary" href="<?= Url::to(["manage/create"]) ?>">Create new</a>
+    <a class="btn btn-primary" href="<?= Url::to(["manage/bulk-add"]) ?>">Bulk add</a>
+</div>
+
 <div>
     <table class="table table-striped table-hover">
         <thead>
@@ -57,12 +72,12 @@ $langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
             <th class="col-md-1">ID</th>
             <th class="col-md-5">String ID</th>
             <th class="col-md-1">&nbsp;</th>
-            <th class="col-md-6">Danish</th>
+            <th class="col-md-6"><?= langHelper::getDefaultLangName() ?></th>
         </tr>
         </thead>
         <tbody>
         <?php foreach($models as $string): ?>
-            <tr class="table-row-link row" data-row-link="/translations/manage/update/id/<?php echo $string->id?>">
+            <tr class="table-row-link row" data-row-link="<?= Url::to(['manage/update', 'id' => $string->id], true)?>">
                 <td><?php echo $string->id; ?></td>
                 <td><?php echo $string->string_id; ?></td>
                 <td><?php
@@ -72,7 +87,7 @@ $langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
                 }
                     echo implode(', ', $has);
                 ?></td>
-                <td><?php echo CHtml::encode($string->dk); ?></td>
+                <td><?php echo Html::encode($string->{langHelper::getDefaultLangCode()}); ?></td>
             </tr>
         <?php endforeach;?>
         </tbody>

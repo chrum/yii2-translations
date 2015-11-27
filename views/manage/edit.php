@@ -1,40 +1,29 @@
 <?php
-/** @var Translations $model */
+/* @var $model \yii\db\ActiveRecord */
+/* @var $form \yii\widgets\ActiveForm */
 
 use yii\helpers\html;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
-$errors = $model->errors;
-if (isset($_SESSION['errors'])) {
-    $errors = array_merge($errors, $_SESSION['errors']);
-    unset($_SESSION['errors']);
-}
-
-$langs = langHelper::getLangs();
-
+$langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
 ?>
 <h1>
     <?php  if ($model->isNewRecord) : ?>
         Create New String
     <?php else : ?>
         Updating String: <?php echo $model->id; ?>
-        <?php echo CHtml::link('Delete', array('manage/delete', 'id' => $model->id), array('class'=>'btn btn-danger btn-xs delete')); ?>
+        <a class="btn btn-danger" href="<?= Url::to(['manage/delete', 'id' => $model->id]) ?>">Delete</a>
     <?php endif; ?>
 </h1>
 
 <div class="form base-quiz col-md-12">
-    <?php $form=$this->beginWidget('CActiveForm', array(
-        'id'=>'string-translation-form',
-        'enableAjaxValidation'=>false,
-
-    )); ?>
-    <?php if (count($errors) > 0): ?>
-        <?php foreach($errors as $error) :?>
-            <div class="alert alert-warning fade in">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <?php echo $error[0] ?>
-            </div>
-        <?php endforeach;?>
-    <?php endif;?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'id' => 'string-translation-form',
+            'enableAjaxValidation'=>false,
+        ]
+    ]); ?>
 
     <div class="row">
         <?php if ($model->id == null):?>
@@ -51,25 +40,26 @@ $langs = langHelper::getLangs();
             </div>
         <?php endif;?>
         <div class="control-group form-group col-md-6">
-            <?php echo $form->labelEx($model,'string_id'); ?>
-            <?php echo $form->textField($model,'string_id', array("class" => "form-control")); ?>
-            <?php echo $form->error($model,'string_id', array("class" => "label label-danger")); ?>
+            <?= $form->field($model, 'string_id')->textInput([
+                'maxlength' => true,
+                'placeholder' => 'Id to use in app ex. APP_HEADER_TITLE'
+            ]) ?>
         </div>
     </div>
 
     <?php foreach($langs as $key => $name): ?>
         <div class="row form-group">
-            <?php echo CHtml::label($name, $key); ?>
-            <?php echo CHtml::textArea('Translations['.$key.']', isset($model->{$key}) ? $model->{$key} : "", array(
-                "placeholder" => "Translated to ".$name,
-                "class" => "form-control"
-            )); ?>
+            <?= $form->field($model, $key)->textarea([
+                'rows' => 2,
+                'placeholder' => "Translated to ".$name
+            ]) ?>
         </div>
     <?php endforeach;?>
 
 
     <div class="row buttons">
-        <?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save', array("class" => "btn btn-danger")); ?>
+        <?php echo Html::submitButton($model->isNewRecord ? 'Create' : 'Save', array("class" => "btn btn-danger")); ?>
+        <a class="btn btn-primary" href="<?= Url::to(["manage/index"]) ?>">Close</a>
     </div>
-    <?php $this->endWidget(); ?>
+    <?php ActiveForm::end(); ?>
 </div><!-- form -->

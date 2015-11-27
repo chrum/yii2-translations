@@ -17,8 +17,8 @@ class langHelper {
 
     public static function getTranslations($lang)
     {
-        /** @var Translations[] $items */
-        $items = Translations::model()->findAll();
+        /* @var \yii\db\ActiveRecord[] $items */
+        $items = Translation::find()->all();
         /*$items = Yii::app()->db->createCommand()
             ->select('string_id, '.$lang)
             ->from(Translations::model()->tableName())
@@ -30,5 +30,16 @@ class langHelper {
 
 
         return $translations;
+    }
+
+    public static function getDefaultLangCode()
+    {
+        return \Yii::$app->getModule('translations')->defaultLang;
+    }
+
+    public static function getDefaultLangName()
+    {
+        $langs = self::getLangs();
+        return $langs[self::getDefaultLangCode()];
     }
 }

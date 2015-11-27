@@ -8,12 +8,14 @@ class Module extends \yii\base\Module
 
     public $defaultRoute = 'manage';
 
-    public $defaultLang = "en";
+    public $defaultLang = 'en';
+
+    public $translationsModelClass = 'common\models\Translation';
     /**
      * @var array Array with available languages
      */
     public $langs = array(
-        "en" => "English"
+        'en' => 'English'
     );
 
     public function init()
