@@ -26,7 +26,7 @@ class langHelper {
                 $translations[strtoupper($item->string_id)] = ucwords(str_replace('_',' ',strtolower($item->string_id)));
 
             } else {
-                $translations[strtoupper($item->string_id)] =  ($item->$lang=='') ? $item->dk : $item->$lang;
+                $translations[strtoupper($item->string_id)] =  ($item->$lang=='') ? \Yii::$app->getModule('translations')->defaultLang : $item->$lang;
 
             }
         }
