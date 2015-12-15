@@ -26,4 +26,9 @@ class getTranslationsAction extends Action
 
         return $result;
     }
+
+    public function getUniqueId()
+    {
+        return $this->id;
+    }
 }

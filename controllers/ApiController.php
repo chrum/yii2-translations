@@ -44,6 +44,7 @@ class ApiController extends Controller
     public function runAction($id, $params = [])
     {
         if ($id == '') {
+            $id = $this->getUniqueId();
             $langs = langHelper::getLangs();
             $fakeControllerId = $this->id;
             if (array_key_exists($fakeControllerId, $langs)) {

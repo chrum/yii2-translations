@@ -18,6 +18,18 @@ class Module extends \yii\base\Module
         'en' => 'English'
     );
 
+    public function __construct($id, $parent = null, $config = [])
+    {
+        // If access is limited, open these for all api methods
+        if (isset($config['as access'])) {
+            $config['as access']['except'] = [];
+            foreach($config['langs'] as $code => $name) {
+                $config['as access']['except'][] = $code;
+            }
+        }
+        parent::__construct($id, $parent, $config);
+    }
+
     public function init()
     {
         parent::init();

@@ -56,7 +56,7 @@ return [
 
 * Apply migrations
 
-    './yii migrate --migrationPath=vendor/chrum/yii2-translations/migrations'
+    './yii migrate --migrationPath=@vendor/chrum/yii2-translations/migrations'
 * Use gii to generate 'Translation' model for table {{'%translations'}}
 * Add Translation model class to config
 
@@ -94,3 +94,29 @@ return [
   ],
 ]
 ~~~
+
+And to your api config (otherwise you will have issue with missing 'User')
+~~~php
+return [
+  ...
+  'components' => [
+        ...
+      'user' => [
+          'identityClass' => 'common\models\User',
+          'enableSession' => false,
+          'enableAutoLogin' => false,
+      ],
+      ...
+]
+~~~
+
+# How to use
+* To edit your language strings go to
+    /translations
+* Endpoint for your app to read language strings:
+    /translation/{language code}
+for example (mainly through api):
+    /translation/en
+but mainly through api
+    
+    
