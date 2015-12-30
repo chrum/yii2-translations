@@ -47,7 +47,17 @@ return [
                 "se" => "Swedish",
                 "no" => "Norwegian",
                 "fi" => "Finnish"
-            ]
+            ],
+            // OPTIONAL
+            'as access' => [
+                'class' => 'yii\filters\AccessControl',
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ]
+                ]
+            ],
         ],
     ],
 ]
@@ -70,43 +80,6 @@ return [
             ...
         ],
     ],
-]
-~~~
-
-* (OPTIONAL but good) In order to restrict access to this module, add to module configuration:
-  
-~~~php
-return [
-  ...
-  'modules' => [
-      'translations' => [
-            ...
-          'as access' => [
-              'class' => 'yii\filters\AccessControl',
-              'rules' => [
-                  [
-                      'allow' => true,
-                      'roles' => ['@'],
-                  ]
-              ]
-          ],
-      ],
-  ],
-]
-~~~
-
-And to your api config (otherwise you will have issue with missing 'User')
-~~~php
-return [
-  ...
-  'components' => [
-        ...
-      'user' => [
-          'identityClass' => 'common\models\User',
-          'enableSession' => false,
-          'enableAutoLogin' => false,
-      ],
-      ...
 ]
 ~~~
 

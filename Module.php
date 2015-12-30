@@ -1,6 +1,7 @@
 <?php
 
 namespace chrum\yii2\translations;
+use common\models\User;
 
 class Module extends \yii\base\Module
 {
@@ -20,6 +21,16 @@ class Module extends \yii\base\Module
 
     public function __construct($id, $parent = null, $config = [])
     {
+        // In order deal with identityClass issue
+        // Both in apiController and migrations
+        \Yii::$container->set('user', ['class' => 'yii\web\User', 'identityClass' => 'common\models\User']);
+        if (\Yii::$app->has('user')) {
+            \Yii::$app->set('user', [
+                'class' => 'yii\web\User',
+                'identityClass' => 'common\models\User'
+            ]);
+        }
+
         // If access is limited, open these for all api methods
         if (isset($config['as access'])) {
             $config['as access']['except'] = [];
