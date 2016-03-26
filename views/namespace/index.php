@@ -3,23 +3,9 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $namespaces chrum\yii2\translations\models\TranslationNamespace[] */
-
-// Trick to force yii2 to load jquery
-$this->registerJs('', \yii\web\View::POS_READY);
+chrum\yii2\translations\assets\TranslationsAssets::register($this);
 ?>
-<script>
-    $(document).ready(function() {
-        $(".form-submit").click(function() {
-            $("#namespace-form").submit();
-        });
-        $(".delete").click(function(event) {
-            if (!confirm("Are you sure you want to delete this namespace?")) {
-                event.preventDefault();
-            }
-        })
-    })
 
-</script>
 <?php if (count($errors) > 0): ?>
     <?php foreach($errors as $error) :?>
         <div class="alert alert-warning fade in">

@@ -7,27 +7,11 @@
 use yii\helpers\Url;
 use chrum\yii2\translations\helpers\langHelper;
 use yii\helpers\Html;
-
-// Trick to force yii2 to load jquery
-$this->registerJs('', \yii\web\View::POS_READY);
+chrum\yii2\translations\assets\TranslationsAssets::register($this);
 
 $langs = langHelper::getLangs();
 ?>
-<script>
-    $(document).ready(function() {
-        $(".table-row-link").click(function(event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            var target = $(event.target);
-            var rowLink = target.data("row-link");
-            if (typeof(rowLink) == 'undefined') {
-                rowLink = target.parent().data("row-link");
-            }
-            document.location.href = rowLink;
-            return false;
-        });
-    })
-</script>
+
 <h1>Manage translation strings</h1>
 
 <label>Namespace</label>

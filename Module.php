@@ -45,6 +45,10 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
+        $this->setAliases([
+            '@yii2-translations-assets' => __DIR__ . '/assets'
+        ]);
+
         foreach($this->langs as $code => $name) {
             $this->controllerMap[$code] = 'chrum\yii2\translations\controllers\ApiController';
         }

@@ -2,23 +2,8 @@
 use yii\helpers\html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-
-// Trick to force yii2 to load jquery
-$this->registerJs('', \yii\web\View::POS_READY);
+chrum\yii2\translations\assets\TranslationsAssets::register($this);
 ?>
-<script>
-    $(document).ready(function() {
-        $("#addMore").click(function(event){
-            event.preventDefault();
-            var clone = $("#emptyRow").clone();
-            clone.removeClass("hidden");
-            clone.attr("id", "");
-            $("#stringsContainer").append(clone);
-        })
-    });
-
-</script>
-
 <div class="form base-quiz col-md-12">
     <?php $form = ActiveForm::begin([
         'options' => [
