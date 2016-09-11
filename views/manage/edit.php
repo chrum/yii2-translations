@@ -59,7 +59,7 @@ $langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
 
     <div class="row buttons">
         <?php echo Html::submitButton($model->isNewRecord ? 'Create' : 'Save', array("class" => "btn btn-danger")); ?>
-        <a class="btn btn-primary" href="<?= Url::to(["manage/index"]) ?>">Close</a>
+        <a class="btn btn-primary" href="<?= Url::to(['index']) ?>">Close</a>
     </div>
     <?php ActiveForm::end(); ?>
 </div><!-- form -->

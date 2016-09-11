@@ -38,6 +38,10 @@ some description, to be written...
 
 return [
     ......
+    'aliases' => [
+        '@chrum' => '@vendor/chrum',
+    ],
+    ......
     'modules' => [
         'translations' => [
             'class' => 'chrum\yii2\translations\Module',

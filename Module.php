@@ -1,7 +1,6 @@
 <?php
 
 namespace chrum\yii2\translations;
-use common\models\User;
 
 class Module extends \yii\base\Module
 {
@@ -44,13 +43,17 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
+        if (\Yii::$app instanceof \yii\console\Application) {
+            $this->controllerNamespace = 'chrum\yii2\translations\commands';
 
-        $this->setAliases([
-            '@yii2-translations-assets' => __DIR__ . '/assets'
-        ]);
+        } else {
+            $this->setAliases([
+                '@yii2-translations-assets' => __DIR__ . '/assets'
+            ]);
 
-        foreach($this->langs as $code => $name) {
-            $this->controllerMap[$code] = 'chrum\yii2\translations\controllers\ApiController';
+            foreach($this->langs as $code => $name) {
+                $this->controllerMap[$code] = 'chrum\yii2\translations\controllers\ApiController';
+            }
         }
     }
 }
