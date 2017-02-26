@@ -45,7 +45,7 @@ class ManageController extends Controller
 
         $currentNamespace = TranslationNamespace::getCurrent();
         if ($currentNamespace != null) {
-            $query->where(['like', 'string_id', $currentNamespace]);
+            $query->where(['like', 'string_id', $currentNamespace . '%', false]);
         };
 
         $models = $query->all();
