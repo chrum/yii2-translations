@@ -49,10 +49,26 @@ $langs = \chrum\yii2\translations\helpers\langHelper::getLangs();
 
     <?php foreach($langs as $key => $name): ?>
         <div class="row form-group">
-            <?= $form->field($model, $key)->textarea([
-                'rows' => 2,
-                'placeholder' => "Translated to ".$name
-            ]) ?>
+            <?php if (isset(Yii::$app->controller->module->codeMirror['presetsDir'])): ?>
+                <div class="well well-sm">
+                    <?= $form->field($model, $key)->widget(
+                        \conquer\codemirror\CodemirrorWidget::className(),
+                        [
+                            'presetsDir' => Yii::getAlias(Yii::$app->controller->module->codeMirror['presetsDir']),
+                            'preset' => Yii::$app->controller->module->codeMirror['preset'],
+                            'settings' => [],
+                        ]
+                    ); ?>
+                </div>
+
+            <?php else: ?>
+                <?= $form->field($model, $key)->textarea([
+                    'rows' => 2,
+                    'placeholder' => "Translated to ".$name
+                ]) ?>
+            <?php endif ?>
+
+
         </div>
     <?php endforeach;?>
 

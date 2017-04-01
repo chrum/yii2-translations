@@ -1,8 +1,6 @@
-[Work in progress, do not use]
 Translations module for yii2
 ==========
-
-some description, to be written...
+Create and edit translations and access them as json
 
 # Requirements
 - yii2
@@ -53,6 +51,7 @@ return [
                 "fi" => "Finnish"
             ],
             // OPTIONAL
+            // To restrict access
             'as access' => [
                 'class' => 'yii\filters\AccessControl',
                 'rules' => [
@@ -67,6 +66,25 @@ return [
 ]
 
 ~~~
+* In order to have [CodeMirror](http://codemirror.net/) instead of raw textarea as translations editor
+..* install this yii2 [extension](https://github.com/borodulin/yii2-codemirror)
+..* Tweak config file:
+~~~php
+return [
+    ......
+    'modules' => [
+        'translations' => [
+            ...
+                'codeMirror' => [
+                    'presetsDir' => '@vendor/chrum/yii2-translations/components/codeMirrorPresets',
+                    'preset' => 'html'
+                ],
+            ...
+        ],
+    ],
+]
+~~~
+
 
 * Apply migrations
 

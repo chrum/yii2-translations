@@ -18,6 +18,16 @@ class Module extends \yii\base\Module
         'en' => 'English'
     );
 
+    /**
+     * Should contain an alias pointing to presets dir and selected preset
+     * for example: '@vendor/chrum/yii2-translations/components/codeMirrorPresets'
+     * @var string|null
+     */
+    public $codeMirror = [
+        'presetsDir' => null,
+        'preset'     => 'html'
+    ];
+
     public function __construct($id, $parent = null, $config = [])
     {
         // In order deal with identityClass issue
