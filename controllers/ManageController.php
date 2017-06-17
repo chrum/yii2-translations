@@ -3,9 +3,12 @@
 namespace chrum\yii2\translations\controllers;
 
 use chrum\yii2\translations\helpers\langHelper;
+use chrum\yii2\translations\models\ImportForm;
 use chrum\yii2\translations\models\TranslationNamespace;
+use common\models\Translation;
 use yii\web\Controller;
 use yii\helpers\StringHelper;
+use yii\web\UploadedFile;
 
 class ManageController extends Controller
 {
@@ -33,7 +36,8 @@ class ManageController extends Controller
         return parent::runAction($id, $params);
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
         if (isset($_REQUEST['setNamespace'])) {
             TranslationNamespace::setCurrent($_REQUEST['setNamespace']);
         }
@@ -135,7 +139,8 @@ class ManageController extends Controller
         ));
     }
 
-    public function actionBulkAdd() {
+    public function actionBulkAdd()
+    {
         $class = \Yii::$app->getModule('translations')->translationsModelClass;
         /* @var $translation \yii\db\ActiveRecord */
 
@@ -167,5 +172,52 @@ class ManageController extends Controller
             'namespaces' => $namespaces,
             'currentNamespace' => $currentNamespace
         ));
+    }
+
+    public function actionExport()
+    {
+        $namespacedClass = \Yii::$app->getModule('translations')->translationsModelClass;
+        $translations = $namespacedClass::find()->asArray()->all();
+        $namespaces = TranslationNamespace::find()->asArray()->all();
+
+        array_walk($translations, function (&$item) {
+            unset($item['id']);
+        });
+        array_walk($namespaces, function (&$item) {
+            unset($item['id']);
+        });
+
+        $data = [
+            'translations' => $translations,
+            'namespaces' => $namespaces
+        ];
+
+        $filename = \Yii::getAlias('@runtime') . '/' . 'Translations.' . time() . '.json';
+        file_put_contents($filename, json_encode($data));
+
+        header('Content-type: text/csv');
+        header('Content-length:' . filesize($filename));
+        header('Content-Disposition: attachment; filename="Translations_' . date('Y-m-d H:i:s') . '.json"');
+        readfile($filename);
+
+        unlink($filename);
+    }
+
+    public function actionImport()
+    {
+        $model = new ImportForm();
+
+        if (\Yii::$app->request->isPost) {
+            $model->setAttributes(\Yii::$app->request->getBodyParam('ImportForm'));
+            $model->dataFile = UploadedFile::getInstance($model, 'dataFile');
+            if ($model->import()) {
+                // file is uploaded successfully
+                return $this->redirect('index');
+            }
+        }
+
+        return $this->render('import', [
+            'model' => $model
+        ]);
     }
 }

@@ -47,6 +47,8 @@ $langs = langHelper::getLangs();
 <div class="col-md-4 pull-right" style="text-align: right">
     <a class="btn btn-primary" href="<?= Url::to(["manage/create"]) ?>">Create new</a>
     <a class="btn btn-primary" href="<?= Url::to(["manage/bulk-add"]) ?>">Bulk add</a>
+    <a class="btn btn-xs btn-warning" href="<?= Url::to(["manage/export"]) ?>">Export data</a>
+    <a class="btn btn-xs btn-danger" href="<?= Url::to(["manage/import"]) ?>">Import</a>
 </div>
 
 <div>
