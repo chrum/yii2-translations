@@ -17,9 +17,12 @@ class TranslationsAssets extends AssetBundle
     public $sourcePath = '@yii2-translations-assets';
     // finally your files..
     public $css = [
+        'css/list.css'
     ];
     public $js = [
         'js/scripts.js',
+        'js/list.js',
+        'js/namespace.js',
     ];
     public $depends = [
         'yii\web\YiiAsset'

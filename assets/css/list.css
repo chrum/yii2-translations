@@ -1,0 +1,24 @@
+.translations-list-controls .btn.active.focus,
+.translations-list-controls .btn.focus {
+    outline: none;
+}
+
+table.translations-table {
+    border-collapse: collapse;
+}
+table.translations-table td {
+    border: 1px solid black;
+    border-top: 0;
+    border-bottom: 0;
+    padding: 10px;
+}
+table.translations-table tr td:first-child {
+    border-left: 0;
+}
+table.translations-table tr td:last-child {
+    border-right: 0;
+}
+
+.table-row-link a {
+    color: black;
+}

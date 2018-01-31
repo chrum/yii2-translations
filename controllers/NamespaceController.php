@@ -4,7 +4,7 @@ use chrum\yii2\translations\models\TranslationNamespace;
 
 class NamespaceController extends \yii\web\Controller
 {
-    public function actionIndex($errors = null) {
+    public function actionIndex($errors = []) {
         $namespaces = TranslationNamespace::find()->all();
 
 		return $this->render('index', array(
@@ -26,10 +26,10 @@ class NamespaceController extends \yii\web\Controller
     {
         $model = TranslationNamespace::findOne($id);
         /* @var $model TranslationNamespace */
-        if ($model != null) {
+        if ($model !== null) {
             $model->delete();
         }
 
-        return $this->actionIndex($model->getErrors());
+        return $this->actionIndex($model ? $model->getErrors() : []);
     }
 }

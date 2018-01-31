@@ -42,6 +42,15 @@ class ManageController extends Controller
             TranslationNamespace::setCurrent($_REQUEST['setNamespace']);
         }
 
+        if (isset($_REQUEST['display'])) {
+            $candidates = explode(',', $_REQUEST['display']);
+            $available = array_keys(langHelper::getLangs());
+            $display = array_intersect($available, $candidates );
+            if (count($display) > 0) {
+                \Yii::$app->session->set('yii2translations_displayedLangs', $display);
+            }
+        }
+
         $class = \Yii::$app->getModule('translations')->translationsModelClass;
         /* @var $class \yii\db\ActiveRecord */
         $query = $class::find()
