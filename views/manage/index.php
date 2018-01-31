@@ -100,7 +100,12 @@ $displayedLangs = Yii::$app->session->get('yii2translations_displayedLangs', [la
                         <tr>
                             <?php foreach($displayedLangs as $lang): ?>
                                 <td>
-                                    <?php echo Html::encode($string->{$lang}); ?>
+                                    <?php if(empty($string->{$lang})): ?>
+                                        <strong><?= $langs[$lang] ?></strong> missing
+
+                                    <?php else: ?>
+                                        <?php echo Html::encode($string->{$lang}); ?>
+                                    <?php endif; ?>
                                 </td>
                             <?php endforeach; ?>
                         </tr>
