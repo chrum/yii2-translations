@@ -21,7 +21,6 @@ class TranslationsAssets extends AssetBundle
     ];
     public $js = [
         'js/scripts.js',
-        'js/list.js',
         'js/namespace.js',
     ];
     public $depends = [

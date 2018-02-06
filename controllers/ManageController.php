@@ -42,13 +42,20 @@ class ManageController extends Controller
             TranslationNamespace::setCurrent($_REQUEST['setNamespace']);
         }
 
-        if (isset($_REQUEST['display'])) {
-            $candidates = explode(',', $_REQUEST['display']);
-            $available = array_keys(langHelper::getLangs());
-            $display = array_intersect($available, $candidates );
-            if (count($display) > 0) {
-                \Yii::$app->session->set('yii2translations_displayedLangs', $display);
+        $availableLangs = array_keys(langHelper::getLangs());
+        if (isset($_REQUEST['toggleLang']) && in_array($_REQUEST['toggleLang'], $availableLangs)) {
+            $displayedLangs = \Yii::$app->session->get('yii2translations_displayedLangs', []);
+            if (in_array($_REQUEST['toggleLang'], $displayedLangs)) {
+                $displayedLangs = array_diff($displayedLangs, [$_REQUEST['toggleLang']]);
+                if (count($displayedLangs) === 0) {
+                    $displayedLangs[] = langHelper::getDefaultLangCode();
+                }
+
+            } else {
+                $displayedLangs[] = $_REQUEST['toggleLang'];
             }
+
+            \Yii::$app->session->set('yii2translations_displayedLangs', $displayedLangs);
         }
 
         $class = \Yii::$app->getModule('translations')->translationsModelClass;
