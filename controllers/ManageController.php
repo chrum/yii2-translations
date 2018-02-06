@@ -4,8 +4,9 @@ namespace chrum\yii2\translations\controllers;
 
 use chrum\yii2\translations\helpers\langHelper;
 use chrum\yii2\translations\models\ImportForm;
+use chrum\yii2\translations\models\SearchTranslation;
 use chrum\yii2\translations\models\TranslationNamespace;
-use common\models\Translation;
+use yii\data\Pagination;
 use yii\web\Controller;
 use yii\helpers\StringHelper;
 use yii\web\UploadedFile;
@@ -42,40 +43,27 @@ class ManageController extends Controller
             TranslationNamespace::setCurrent($_REQUEST['setNamespace']);
         }
 
-        $availableLangs = array_keys(langHelper::getLangs());
-        if (isset($_REQUEST['toggleLang']) && in_array($_REQUEST['toggleLang'], $availableLangs)) {
-            $displayedLangs = \Yii::$app->session->get('yii2translations_displayedLangs', []);
-            if (in_array($_REQUEST['toggleLang'], $displayedLangs)) {
-                $displayedLangs = array_diff($displayedLangs, [$_REQUEST['toggleLang']]);
-                if (count($displayedLangs) === 0) {
-                    $displayedLangs[] = langHelper::getDefaultLangCode();
-                }
+        $searchModel = new SearchTranslation();
+        $query = $searchModel->search(\Yii::$app->request->queryParams);
 
-            } else {
-                $displayedLangs[] = $_REQUEST['toggleLang'];
-            }
+        $countQuery = clone $query;
+        $pages = new Pagination([
+            'totalCount' => $countQuery->count(),
+            'pageSizeLimit' => [1, 10]
+        ]);
+        $models = $query->offset($pages->offset)
+            ->limit($pages->limit)
+            ->all();
 
-            \Yii::$app->session->set('yii2translations_displayedLangs', $displayedLangs);
-        }
-
-        $class = \Yii::$app->getModule('translations')->translationsModelClass;
-        /* @var $class \yii\db\ActiveRecord */
-        $query = $class::find()
-            ->orderBy("string_id ASC");
-
-        $currentNamespace = TranslationNamespace::getCurrent();
-        if ($currentNamespace != null) {
-            $query->where(['like', 'string_id', $currentNamespace . '%', false]);
-        };
-
-        $models = $query->all();
         $namespaces = TranslationNamespace::find()->all();
 
-		return $this->render('index', array(
+		return $this->render('index', [
+		    'searchModel' => $searchModel,
             'models' => $models,
             'namespaces' => $namespaces,
-            'currentNamespace' => $currentNamespace
-        ));
+            'currentNamespace' => TranslationNamespace::getCurrent(),
+            'pages' => $pages
+        ]);
 	}
 
     public function actionCreate()
